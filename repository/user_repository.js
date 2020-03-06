@@ -54,3 +54,31 @@ exports.create = ({ username = '', name = '', password = '' }) => {
         })
     })
 }
+
+exports.findByID = (id) => new Promise((resolve, reject) =>{
+    pool.getConnection((err, conn) => {
+        if (err) {
+            reject(err)
+            return
+        }
+
+        conn.query(`SELECT * FROM users WHERE id = ?`, [id], (err, res) => {
+            conn.release()
+
+            if (err) {
+                console.error(err)
+                reject(err)
+                return
+            }
+
+            if (res.size == 0) {
+                resolve(null)
+                return
+            }
+
+            let obj = utils.objectifyRawPacket(res[0])
+            console.log(obj)
+            resolve(obj)
+        })
+    })
+})

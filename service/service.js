@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const userService = require('./user_service')
 const authService = require('./auth_service')
+const contentService = require('./content_service')
 
 const app = express()
 
@@ -10,6 +11,7 @@ app.use(bodyParser.json({ type: 'application/json' }))
 app.get("/ping", (req, res) => res.json({"ping": "pong"}))
 app.use("/users", userService)
 app.use("/auth", authService)
+app.use("/contents", contentService)
 
 exports.start = () => {
     app.listen(3000, () => {

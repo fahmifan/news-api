@@ -10,4 +10,16 @@ let createTableUser = `
     );
 `
 
-utils.migrate([createTableUser])
+let createTableContent = `
+    CREATE TABLE IF NOT EXISTS contents (
+        id INT NOT NULL AUTO_INCREMENT,
+        author_id INT NOT NULL,
+        title TEXT,
+        slug VARCHAR(3072),
+        body TEXT,
+        CONSTRAINT contents_slug_unique UNIQUE (slug),
+        PRIMARY KEY (id)
+    )
+`
+
+utils.migrate([createTableUser, createTableContent])
