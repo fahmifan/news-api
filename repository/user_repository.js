@@ -18,6 +18,11 @@ exports.findByUsername = (username) => new Promise((resolve, reject) =>{
                 return
             }
 
+            if (res.size == 0) {
+                resolve(null)
+                return
+            }
+
             let obj = utils.objectifyRawPacket(res[0])
             console.log(obj)
             resolve(obj)
