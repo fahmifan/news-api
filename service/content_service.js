@@ -27,4 +27,23 @@ r.post("/", async (req, res) => {
     }
 })
 
+r.get("/", async(req, res) => {
+    try {
+        let { size, page } = req.query
+
+        size = Number.parseInt(size, 10)
+        page = Number.parseInt(page, 10)
+
+        const contents = await contentRepo.findAll({ size, page })
+        if (!contents) {
+            return res.status(404).json({"message": "failed"})
+        }
+    
+        return res.json(contents)   
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({ "message": "something wrong" })
+    }
+})
+
 module.exports = r
