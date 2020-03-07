@@ -1,11 +1,11 @@
 const userRepo = require('../repository/user_repository.js')
 const contentRepo = require('../repository/content_repository.js')
-const auth = require('./auth.js')
+const middleware = require('./middleware.js')
 
 const Router = require('express').Router
 const r = Router()
 
-r.post("/", auth.authenticate, async (req, res) => {
+r.post("/", middleware.authenticate, async (req, res) => {
     try {
         const { content } = req.body
         // TODO: add validation
@@ -47,7 +47,7 @@ r.get("/", async(req, res) => {
     }
 })
 
-r.put("/",  auth.authenticate, async(req, res) => {
+r.put("/",  middleware.authenticate, async(req, res) => {
     try {
         const { content } = req.body
         // TODO: add validation
