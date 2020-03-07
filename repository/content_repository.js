@@ -39,15 +39,16 @@ exports.create = ({ author_id = 0, title = '', body = '' }) => {
 }
 
 exports.findAll = ({ size = 0, page = 0 }) => {
-    if (!page || page < 0) {
-        page = 0
+    if (!page || page < 1) {
+        page = 1
     }
 
     if (!size || size <= 0 || size > 50) {
         size = MAX_SIZE
     }
 
-    const offset = size * page
+    // for first page, offset is 0
+    const offset = size * (page-1)
     return new Promise((resolve, reject) => {
         pool.getConnection((err, conn) => {
             if (err) {
