@@ -47,4 +47,34 @@ r.get("/", async(req, res) => {
     }
 })
 
+r.put("/",  auth.authenticate, async(req, res) => {
+    try {
+        const { content } = req.body
+        // TODO: add validation
+
+        const { user } = req.context
+
+        // check if content exists
+        const oldContent = await contentRepo.findByID(content.id)
+        if (!oldContent) {
+            return res.status(404).json({"message": "content not found"})
+        }
+
+        // not the same user
+        if (!user || (user.id !== oldContent.author_id)) {
+            return res.status(403).json({"message": "cannot update content"})
+        }
+
+        const updatedContent = await contentRepo.update(content)
+        if (!updatedContent) {
+            return res.status(400).json({"message": "failed"})
+        }
+    
+        return res.json(updatedContent)   
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({"message": "something wrong"})
+    }
+})
+
 module.exports = r

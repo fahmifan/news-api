@@ -70,3 +70,60 @@ exports.findAll = ({ size = 0, page = 0 }) => {
         })
     })
 }
+
+exports.update = ({ id = 0, title = '', body = '' }) => {
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, conn) => {
+            if (err) {
+                console.error(err)
+                reject(err)
+                return
+            }
+
+            const slug = createUniqueSlug(title)
+
+            const q = `UPDATE contents SET title = ?, body = ?, slug = ? WHERE id = ?`
+            conn.query(q, [title, body, slug, id], (err, res) => {
+                conn.release()
+
+                if (err) {
+                    console.error(err)
+                    reject(err)
+                    return
+                }
+
+                const id = res.insertedId
+                resolve({ id, title, body, slug })
+            })
+        })
+    })
+}
+
+exports.findByID = (id = 0) => {
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, conn) => {
+            if (err) {
+                console.error(err)
+                reject(err)
+                return
+            }
+
+            const q = `SELECT * FROM contents where id = ? limit 1`
+            conn.query(q, [id], (err, res) => {
+                if (err) {
+                    console.error(err)
+                    reject(err)
+                    return
+                }
+
+                if (res.length <= 0) {
+                    resolve(null)
+                    return
+                }
+
+                // transform res to array of simple object
+                resolve(utils.objectifyRawPacket(res[0]))
+            })
+        })
+    })
+}
